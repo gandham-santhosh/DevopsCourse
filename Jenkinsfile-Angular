@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+    
+    environment {
+        PATH = "/usr/local/bin:$PATH"
+    }
+    
+    stages {
+        stage('Clone the repository') {
+            steps {
+                
+             // Clone the repo
+                sh 'git clone https://github.com/yusufsefasezer/angular-contact-list'
+            }
+        }
+        stage('Build angular app') {
+            steps {
+                // Install dependencies and build the Angular app
+             // Install dependencies and build the Angular app
+                dir('angular-contact-list') {
+                    // Install npm dependencies
+                    // Build the Angular app
+
+                    sh '''
+                          npm install
+                          ng build 
+                        '''
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                // Deploy the Angular app (e.g., copy files to a web server)
+                 sh 'scp -i /var/lib/jenkins/secrets/sshkey_rsa -r angular-contact-list/dist/contact techinsideout003@10.138.0.7:/var/www/html'
+                 
+            }
+        }
+    }
+    
+    post {
+        always {
+            // Clean up after the build
+            sh 'rm -rf angular-contact-list'
+        }
+    }
+}
